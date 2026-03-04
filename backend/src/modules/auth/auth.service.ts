@@ -36,6 +36,7 @@ export class AuthService {
     if (existing) {
       throw new ConflictException('Email já utilizado.');
     }
+    // NFR-SEC-001: parâmetros alvo 200–500 ms em hardware de referência; validar em pipeline/deploy (ver ADR-001).
     const passwordHash = await argon2.hash(dto.password, {
       type: argon2.argon2id,
       memoryCost: 65536,

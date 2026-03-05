@@ -2,6 +2,7 @@ import {
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import type { PrismaClient } from '.prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { GoalsMotorService } from './services/goals-motor.service';
 import type { WeeklyPlanResponseDto } from './dto/weekly-plan-response.dto';
@@ -22,14 +23,15 @@ export class PlanService {
     userId: string,
     tenantId: string,
   ): Promise<WeeklyPlanResponseDto> {
-    const profile = await this.prisma.userProfile.findFirst({
+    const prisma = this.prisma as unknown as PrismaClient;
+    const profile = await prisma.userProfile.findFirst({
       where: {
         userId,
         user: { tenantId, deletedAt: null },
         deletedAt: null,
       },
     });
-    const goal = await this.prisma.bodyCompositionGoal.findFirst({
+    const goal = await prisma.bodyCompositionGoal.findFirst({
       where: {
         userId,
         user: { tenantId, deletedAt: null },
@@ -83,7 +85,7 @@ export class PlanService {
       machines_only: machinesOnly,
     };
 
-    const plan = await this.prisma.weeklyPlan.create({
+    const plan = await prisma.weeklyPlan.create({
       data: {
         userId,
         tenantId,

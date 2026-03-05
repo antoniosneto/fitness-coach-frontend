@@ -10,5 +10,9 @@ export function getClientIp(req: Request): string {
     const first = forwarded.split(',')[0]?.trim();
     if (first) return first;
   }
+  if (Array.isArray(forwarded) && forwarded.length > 0) {
+    const first = String(forwarded[0]).split(',')[0]?.trim();
+    if (first) return first;
+  }
   return req.socket?.remoteAddress ?? '127.0.0.1';
 }
